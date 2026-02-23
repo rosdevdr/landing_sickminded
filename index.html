@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SICK MINDED Oficial Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;400;700&family=Barlow:ital,wght@0,300;0,400;1,300;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --red:   #c0392b;
+      --red2:  #8b1a12;
+      --bg:    #030303;
+      --bg2:   #080808;
+      --bg3:   #0e0e0e;
+      --bg4:   #131313;
+      --line:  #1c1c1c;
+      --text:  #c8c8c8;
+      --muted: #4a4a4a;
+      --dim:   #2e2e2e;
+      --white: #e8e8e8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ══ SCROLLBAR ══ */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--red2); }
+
+    /* ══ NAV ══ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 800;
+      padding: 20px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(3,3,3,0.97), transparent);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s, background 0.4s;
+    }
+    nav.scrolled { background: rgba(3,3,3,0.97); border-bottom-color: var(--line); }
+    .nav-logo {
+      font-family: 'Oswald', sans-serif; font-weight: 700;
+      font-size: 1.1rem; letter-spacing: 8px; text-transform: uppercase; color: var(--white);
+    }
+    .nav-logo span { color: var(--red); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: 'Courier Prime', monospace; font-size: 0.63rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--red); }
+    /* Hamburger */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+    .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--muted); transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    /* Mobile overlay */
+    .mobile-overlay {
+      display: none; position: fixed; inset: 0; z-index: 700;
+      background: rgba(3,3,3,0.98);
+      flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+    }
+    .mobile-overlay.open { display: flex; }
+    .mobile-overlay a {
+      font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 2.2rem;
+      letter-spacing: 5px; text-transform: uppercase;
+      color: var(--white); text-decoration: none; transition: color 0.2s;
+    }
+    .mobile-overlay a:hover { color: var(--red); }
+
+    /* ══ HERO ══ */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      padding: 0 24px 100px; position: relative; overflow: hidden; text-align: center;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 100% 60% at 50% 110%, rgba(139,26,18,0.18) 0%, transparent 65%),
+        linear-gradient(180deg, #020202 0%, #050202 60%, #080303 100%);
+    }
+    .scanlines {
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px);
+      pointer-events: none;
+    }
+    .vignette {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(0,0,0,0.8) 100%);
+    }
+    .road {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 130px solid transparent;
+      border-right: 130px solid transparent;
+      border-bottom: 360px solid rgba(18,18,18,0.4);
+    }
+    .road::before {
+      content: ''; position: absolute; bottom: -360px; left: 50%; transform: translateX(-50%);
+      width: 5px; height: 360px;
+      background: repeating-linear-gradient(to bottom, var(--red) 0, var(--red) 24px, transparent 24px, transparent 48px);
+      animation: road 0.9s linear infinite;
+    }
+    @keyframes road { to { background-position: 0 48px; } }
+    .hero-eyebrow {
+      position: relative; z-index: 2;
+      font-family: 'Courier Prime', monospace; font-size: 0.6rem;
+      letter-spacing: 5px; text-transform: uppercase; color: var(--red); margin-bottom: 22px;
+      opacity: 0; animation: rise 0.9s 0.3s forwards;
+    }
+    .hero-title {
+      position: relative; z-index: 2;
+      font-family: 'Oswald', sans-serif; font-weight: 700;
+      font-size: clamp(4rem, 14vw, 14rem);
+      line-height: 0.88; letter-spacing: -2px; text-transform: uppercase;
+      opacity: 0; animation: rise 1s 0.5s forwards;
+    }
+    .hero-title .outline { -webkit-text-stroke: 1.5px rgba(192,57,43,0.7); color: transparent; display: block; }
+    .hero-title .solid   { color: var(--white); display: block; text-shadow: 0 0 80px rgba(192,57,43,0.2), 0 2px 0 #000; }
+    .hero-rule {
+      position: relative; z-index: 2;
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--red), transparent);
+      margin: 26px auto 20px;
+      opacity: 0; animation: rise 0.9s 0.8s forwards;
+    }
+    .hero-quote {
+      position: relative; z-index: 2;
+      font-family: 'Barlow', sans-serif; font-style: italic; font-weight: 300;
+      font-size: clamp(0.85rem, 1.8vw, 1.1rem); letter-spacing: 2px;
+      color: var(--muted); max-width: 460px; line-height: 1.7;
+      opacity: 0; animation: rise 0.9s 1s forwards;
+    }
+    .hero-cta {
+      position: relative; z-index: 2; margin-top: 38px;
+      opacity: 0; animation: rise 0.9s 1.2s forwards;
+    }
+    .btn-discord {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: 'Courier Prime', monospace; font-size: 0.7rem;
+      letter-spacing: 4px; text-transform: uppercase;
+      text-decoration: none; color: #000; background: var(--red);
+      padding: 15px 36px;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+      transition: all 0.25s; position: relative; overflow: hidden;
+    }
+    .btn-discord::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,0.1); transform: translateX(-100%); transition: transform 0.3s;
+    }
+    .btn-discord:hover::before { transform: translateX(0); }
+    .btn-discord:hover { background: #d44233; box-shadow: 0 0 40px rgba(192,57,43,0.5); }
+    .discord-icon { width: 15px; height: 15px; fill: #000; flex-shrink: 0; }
+    .scroll-hint {
+      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+      font-family: 'Courier Prime', monospace; font-size: 0.52rem; letter-spacing: 4px;
+      color: var(--dim); text-transform: uppercase;
+      display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .scroll-hint::after { content: ''; width: 1px; height: 26px; background: linear-gradient(to bottom, var(--dim), transparent); }
+    @keyframes rise  { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulse { 0%,100%{ opacity:0.3; } 50%{ opacity:0.8; } }
+
+    /* ══ LAYOUT ══ */
+    .h-rule { width:100%; height:1px; background:var(--line); }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 56px; }
+    .sec  { padding: 100px 0; }
+    .sec-label {
+      font-family: 'Courier Prime', monospace; font-size: 0.58rem;
+      letter-spacing: 5px; text-transform: uppercase; color: var(--red); margin-bottom: 12px;
+    }
+    .sec-title {
+      font-family: 'Oswald', sans-serif; font-weight: 700;
+      font-size: clamp(2.4rem, 4.5vw, 5rem);
+      text-transform: uppercase; letter-spacing: 1px; line-height: 1;
+      color: var(--white); margin-bottom: 48px;
+    }
+    .reveal { opacity:0; transform:translateY(24px); transition: opacity 0.8s, transform 0.8s; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* ══ ABOUT ══ */
+    #about .inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .manifesto-text p { font-size: 1rem; font-weight: 300; line-height: 1.9; color: #7a7a7a; margin-bottom: 20px; }
+    .manifesto-text p em { color: var(--text); font-style: italic; }
+    .manifesto-text .highlight {
+      font-size: 1.2rem; font-weight: 400; font-style: italic;
+      color: var(--text); border-left: 2px solid var(--red);
+      padding-left: 18px; margin: 32px 0; line-height: 1.7;
+    }
+    .manifesto-text .aside {
+      color: #3a3a3a; margin-top: 36px;
+      font-family: 'Courier Prime', monospace; font-size: 0.63rem; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .about-right { display: flex; flex-direction: column; gap: 2px; }
+    .fact-row {
+      display: grid; grid-template-columns: 80px 1fr;
+      background: var(--bg3); overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+    .fact-num {
+      background: var(--bg4); display: flex; align-items: center; justify-content: center;
+      font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 1.6rem; color: var(--red);
+      padding: 24px 0; border-right: 1px solid var(--line);
+    }
+    .fact-body { padding: 18px 20px; }
+    .fact-body strong {
+      display: block; font-family: 'Oswald', sans-serif; font-weight: 400;
+      font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text); margin-bottom: 4px;
+    }
+    .fact-body span { font-size: 0.85rem; font-weight: 300; color: var(--muted); line-height: 1.5; }
+
+    /* ══════════════════════════════════════════════
+       GALERÍA EN CASCADA
+       Columnas con CSS columns — las imágenes
+       respetan su proporción natural y se ordenan
+       en cascada de arriba a abajo por columna.
+       Cada imagen queda enmarcada con borde, índice
+       y caption, todo limitado al mismo ancho.
+    ══════════════════════════════════════════════ */
+    #gallery { background: var(--bg2); }
+
+    /* Contenedor de cascada: 3 columnas de igual ancho */
+    .cascade {
+      columns: 3;
+      column-gap: 4px;
+    }
+
+    /* Cada item de la cascada */
+    .cascade-item {
+      break-inside: avoid;       /* nunca parte una imagen entre columnas */
+      position: relative;
+      margin-bottom: 4px;
+      overflow: hidden;
+      background: var(--bg3);
+      border: 1px solid var(--line);
+      transition: border-color 0.3s;
+      cursor: crosshair;
+      display: block;            /* necesario para break-inside en Safari */
+    }
+    .cascade-item:hover { border-color: var(--red2); }
+
+    /* La imagen ocupa 100% del ancho de la columna
+       y mantiene su proporción natural (sin altura forzada) */
+    .cascade-item img {
+      display: block;
+      width: 100%;
+      height: auto;              /* altura automática = proporción real */
+      filter: grayscale(55%) brightness(0.55) contrast(1.1);
+      transition: filter 0.5s, transform 0.5s;
+    }
+    .cascade-item:hover img {
+      filter: grayscale(5%) brightness(0.8) contrast(1.05);
+      transform: scale(1.03);
+    }
+
+    /* Pie de foto */
+    .cascade-caption {
+      padding: 10px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--line);
+      background: var(--bg4);
+    }
+    .cascade-caption span {
+      font-family: 'Courier Prime', monospace; font-size: 0.55rem;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+    }
+    .cascade-caption .idx { color: var(--red); }
+
+    /* Overlay hover */
+    .cascade-item::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(192,57,43,0.06);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .cascade-item:hover::after { opacity: 1; }
+
+    /* Instrucción para agregar fotos */
+    .gallery-note {
+      margin-top: 16px;
+      font-family: 'Courier Prime', monospace; font-size: 0.58rem;
+      letter-spacing: 2px; color: var(--dim); text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════════════════════
+       VIDEOS — mismo ancho, cascada de 2 columnas
+       Los iframes tienen aspect-ratio 16/9 forzado
+       con el truco del padding-bottom clásico
+    ══════════════════════════════════════════════ */
+    .video-cascade {
+      columns: 2;
+      column-gap: 4px;
+    }
+    .video-cascade-item {
+      break-inside: avoid;
+      margin-bottom: 4px;
+      background: var(--bg3);
+      border: 1px solid var(--line);
+      transition: border-color 0.3s;
+      overflow: hidden;
+    }
+    .video-cascade-item:hover { border-color: var(--red2); }
+
+    /* Contenedor 16:9 para iframe o placeholder */
+    .video-frame {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 9/16 = 56.25% — fuerza 16:9 siempre */
+      height: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    .video-frame iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      border: none; display: block;
+    }
+    /* Placeholder cuando no hay iframe */
+    .video-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+    }
+    .play-ring {
+      width: 50px; height: 50px;
+      border: 1.5px solid var(--red); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--red); font-size: 1rem; padding-left: 3px;
+      transition: all 0.3s;
+    }
+    .video-cascade-item:hover .play-ring { background: var(--red); color: #000; box-shadow: 0 0 24px rgba(192,57,43,0.5); }
+    .v-label {
+      font-family: 'Courier Prime', monospace; font-size: 0.58rem;
+      letter-spacing: 2px; color: var(--muted); text-align: center; text-transform: uppercase;
+    }
+    /* Pie del video */
+    .video-caption {
+      padding: 10px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--line); background: var(--bg4);
+    }
+    .video-caption span {
+      font-family: 'Courier Prime', monospace; font-size: 0.55rem;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+    }
+    .video-caption .idx { color: var(--red); }
+
+    /* ══ LINKS ══ */
+    #links { background: var(--bg2); }
+    .links-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 2px;
+    }
+    .l-card {
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 160px; background: var(--bg3); padding: 26px;
+      text-decoration: none; color: var(--text);
+      border-top: 2px solid var(--line);
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .l-card:hover { border-top-color: var(--red); background: #100808; }
+    .l-card-top   { display: flex; flex-direction: column; gap: 10px; }
+    .l-card-glyph { font-family: 'Courier Prime', monospace; font-size: 0.68rem; color: var(--red); letter-spacing: 2px; }
+    .l-card-title { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 1.4rem; letter-spacing: 3px; text-transform: uppercase; color: var(--white); }
+    .l-card-desc  { font-size: 0.82rem; font-weight: 300; color: var(--muted); line-height: 1.6; margin-top: 6px; }
+    .l-card-arrow { font-family: 'Courier Prime', monospace; font-size: 0.58rem; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-top: 20px; transition: color 0.2s; }
+    .l-card:hover .l-card-arrow { color: var(--red); }
+
+    /* ══ JOIN ══ */
+    .join-wrap { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); }
+    .join-left {
+      padding: 64px 56px; border-right: 1px solid var(--line);
+      display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
+    }
+    .big-quote {
+      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-size: clamp(1.8rem, 3vw, 3rem); line-height: 1.2;
+      letter-spacing: 1px; color: var(--white); margin-bottom: 24px;
+    }
+    .big-quote em { font-style: italic; color: var(--red); }
+    .join-left p { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.8; max-width: 400px; }
+    .join-right {
+      padding: 64px 56px; background: var(--bg2);
+      display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 20px;
+    }
+    .join-right p { font-size: 0.92rem; font-weight: 300; color: var(--muted); line-height: 1.8; max-width: 360px; }
+    .warn { font-family: 'Courier Prime', monospace; font-size: 0.58rem; letter-spacing: 2px; color: var(--dim); margin-top: 4px; }
+
+    /* ══ FOOTER ══ */
+    footer {
+      padding: 32px 56px; border-top: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-logo { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 0.82rem; letter-spacing: 6px; text-transform: uppercase; color: var(--dim); }
+    .footer-logo span { color: var(--red); }
+    footer p { font-family: 'Courier Prime', monospace; font-size: 0.56rem; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; }
+
+    /* ══════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .wrap { padding: 0 32px; }
+      nav   { padding: 18px 32px; }
+      .cascade       { columns: 3; }
+      .video-cascade { columns: 2; }
+    }
+
+    @media (max-width: 768px) {
+      .wrap { padding: 0 20px; }
+      nav   { padding: 16px 20px; }
+      .sec  { padding: 64px 0; }
+      .nav-links  { display: none; }
+      .hamburger  { display: flex; }
+      #about .inner { grid-template-columns: 1fr; gap: 40px; }
+      /* Galería 2 cols en tablet */
+      .cascade       { columns: 2; }
+      .video-cascade { columns: 1; }
+      .join-wrap   { grid-template-columns: 1fr; }
+      .join-left   { border-right: none; border-bottom: 1px solid var(--line); padding: 48px 24px; }
+      .join-right  { padding: 48px 24px; }
+      footer { padding: 24px 20px; justify-content: center; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      /* Galería 1 col en móvil */
+      .cascade       { columns: 1; }
+      .video-cascade { columns: 1; }
+      .links-grid    { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Mobile overlay -->
+<div class="mobile-overlay" id="mobileOverlay">
+  <a href="#about"   onclick="closeMenu()">Quiénes somos</a>
+  <a href="#gallery" onclick="closeMenu()">Galería</a>
+  <a href="#videos"  onclick="closeMenu()">Videos</a>
+  <a href="#links"   onclick="closeMenu()">Links</a>
+  <a href="#join"    onclick="closeMenu()">Únete</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">SICK<span>.</span>MINDED</div>
+  <ul class="nav-links">
+    <li><a href="#about">Quiénes somos</a></li>
+    <li><a href="#gallery">Galería</a></li>
+    <li><a href="#videos">Videos</a></li>
+    <li><a href="#links">Links</a></li>
+    <li><a href="#join">Únete</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+  <div class="road"></div>
+  <div class="hero-eyebrow">Vespucci, Los Santos — Underground Racing Crew</div>
+  <h1 class="hero-title">
+    <span class="outline">Sick</span>
+    <span class="solid">Minded</span>
+  </h1>
+  <div class="hero-rule"></div>
+  <p class="hero-quote">
+    "Donde otros frenaban, ellos aceleraban.<br>
+    No hay reglas escritas, no hay títulos.<br>
+    Acá ganabas tu lugar."
+  </p>
+  <div class="hero-cta">
+    <a href="https://discord.gg/3PqBDUpK" target="_blank" rel="noopener" class="btn-discord">
+      <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Entrar al servidor
+    </a>
+  </div>
+  <div class="scroll-hint">scroll</div>
+</section>
+<div class="h-rule"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap sec">
+    <div class="inner">
+      <div class="manifesto-text reveal">
+        <div class="sec-label">// 01 — Quiénes somos</div>
+        <h2 class="sec-title">Sick Minded</h2>
+        <p>En esta ciudad nadie te regala nada. Algunos crecen con ventaja… otros aprendemos a movernos entre el humo, el ruido de los motores y la calle que siempre cobra caro.</p>
+        <div class="highlight">"Los llamaban Sick Minded porque hacían lo que otros ni se atrevían a pensar."</div>
+        <p>Un grupo de <em>outsiders</em> — inadaptados, marginados, jóvenes con problemas, talentos o secretos — que encontró en los autos y las carreras su forma de pertenecer, rebelarse y construir identidad. Ninguno venía buscando gloria. Uno quería respuestas sobre su pasado, otro estaba cansado de que lo subestimen, otro buscaba una salida. Pero todos compartían lo mismo: <em>la necesidad de quemar asfalto y sentirse vivos aunque sea por un rato.</em></p>
+        <p>Su refugio era un taller en la zona de Vespucci, donde la chapa oxidada y el olor a aceite viejo contaban más historias que cualquier palabra. Los depósitos abandonados se volvían pistas improvisadas. Las luces se apagaban. Los autos empezaban a rugir como si tuvieran alma propia.</p>
+        <p class="aside">— No todo era amistad. La calle tiene rivales. Y siempre hay traiciones.</p>
+      </div>
+      <div class="about-right reveal" style="transition-delay:0.15s;">
+        <div class="fact-row">
+          <div class="fact-num">?</div>
+          <div class="fact-body"><strong>Miembros actuales</strong><span>El número exacto es un misterio. Siempre hay alguien nuevo, alguien que se va, alguien que vuelve.</span></div>
+        </div>
+        <div class="fact-row">
+          <div class="fact-num">↯</div>
+          <div class="fact-body"><strong>Código del grupo</strong><span>Sin reglas escritas, sin títulos. Ganas tu lugar con riesgo, manos engrasadas y el pie firme.</span></div>
+        </div>
+        <div class="fact-row">
+          <div class="fact-num">0</div>
+          <div class="fact-body"><strong>Derrotas aceptadas</strong><span>Donde otros frenaban, nosotros aceleramos. Conducir no es un juego. Es lo único real.</span></div>
+        </div>
+        <div class="fact-row">
+          <div class="fact-num">∞</div>
+          <div class="fact-body"><strong>Meta del grupo</strong><span>Demostrar que los que vienen desde abajo también pueden hacer temblar el pavimento.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="h-rule"></div>
+
+<!-- ══════════════════════════════════════════
+     GALERÍA EN CASCADA
+     Las imágenes van en orden de arriba abajo,
+     columna por columna, enmarcadas con pie de foto.
+     Para agregar foto: copia un bloque .cascade-item.
+═══════════════════════════════════════════ -->
+<section id="gallery">
+  <div class="wrap sec">
+    <div class="sec-label reveal">// 02 — Fotografía</div>
+    <h2 class="sec-title reveal">Galería</h2>
+
+    <div class="cascade reveal" style="transition-delay:0.1s;">
+
+      <div class="cascade-item">
+        <img src="contenidovisualsickminded/imgs/GTA5_2026-02-22_20-43-33_254.png" alt="Foto 01" loading="lazy" />
+        <div class="cascade-caption">
+          <span class="idx">01</span>
+          <span>Vespucci — Noche</span>
+        </div>
+      </div>
+
+      <div class="cascade-item">
+        <img src="contenidovisualsickminded/imgs/GTA5_2026-02-22_20-45-13_318.png" alt="Foto 02" loading="lazy" />
+        <div class="cascade-caption">
+          <span class="idx">02</span>
+          <span>En pista</span>
+        </div>
+      </div>
+
+      <div class="cascade-item">
+        <img src="contenidovisualsickminded/imgs/GTA5_2026-02-22_20-33-28_495.png" alt="Foto 03" loading="lazy" />
+        <div class="cascade-caption">
+          <span class="idx">03</span>
+          <span>El taller</span>
+        </div>
+      </div>
+
+      <div class="cascade-item">
+        <img src="contenidovisualsickminded/imgs/imgus4.png" alt="Foto 04" loading="lazy" />
+        <div class="cascade-caption">
+          <span class="idx">04</span>
+          <span>El crew</span>
+        </div>
+      </div>
+
+      <!--
+        PARA AGREGAR MÁS FOTOS, copia este bloque:
+
+        <div class="cascade-item">
+          <img src="ruta/de/tu/foto.jpg" alt="descripción" loading="lazy" />
+          <div class="cascade-caption">
+            <span class="idx">05</span>
+            <span>Descripción corta</span>
+          </div>
+        </div>
+      -->
+
+    </div>
+
+    <p class="gallery-note reveal">// Agrega fotos copiando el bloque cascade-item con tu imagen</p>
+  </div>
+</section>
+<div class="h-rule"></div>
+
+<!-- ══════════════════════════════════════════
+     VIDEOS EN CASCADA 2 columnas
+     Cada video tiene ratio 16:9 fijo via padding-bottom.
+     Para activar: reemplaza el div.video-placeholder
+     con <iframe src="https://www.youtube.com/embed/ID"
+                 title="título" allowfullscreen></iframe>
+═══════════════════════════════════════════ -->
+<section id="videos">
+  <div class="wrap sec">
+    <div class="sec-label reveal">// 03 — En Pista</div>
+    <h2 class="sec-title reveal">Videos</h2>
+
+    <div class="video-cascade reveal" style="transition-delay:0.1s;">
+
+      <div class="video-cascade-item">
+        <div class="video-frame">
+          <!-- Reemplaza por: <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Video 01" allowfullscreen></iframe> -->
+          <div class="video-placeholder">
+            <div class="play-ring">▶</div>
+            <div class="v-label">Video 01 — lugar para iframe</div>
+          </div>
+        </div>
+        <div class="video-caption">
+          <span class="idx">01</span>
+          <span>Video principal</span>
+        </div>
+      </div>
+
+      <div class="video-cascade-item">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="play-ring">▶</div>
+            <div class="v-label">Video 02</div>
+          </div>
+        </div>
+        <div class="video-caption">
+          <span class="idx">02</span>
+          <span>Video 02</span>
+        </div>
+      </div>
+
+      <div class="video-cascade-item">
+        <div class="video-frame">
+          <div class="video-placeholder">
+            <div class="play-ring">▶</div>
+            <div class="v-label">Video 03</div>
+          </div>
+        </div>
+        <div class="video-caption">
+          <span class="idx">03</span>
+          <span>Video 03</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<div class="h-rule"></div>
+
+<!-- LINKS -->
+<section id="links">
+  <div class="wrap sec">
+    <div class="sec-label reveal">// 04 — Conecta con el grupo</div>
+    <h2 class="sec-title reveal">Enlaces</h2>
+    <div class="links-grid reveal" style="transition-delay:0.1s;">
+      <a href="https://discord.gg/9VTyfWuX" target="_blank" rel="noopener" class="l-card">
+        <div class="l-card-top"><div class="l-card-glyph">[ DISCORD ]</div><div class="l-card-title">Servidor</div><div class="l-card-desc">Canal principal del grupo. Coordinación de carreras, eventos nocturnos y comunicación interna.</div></div>
+        <div class="l-card-arrow">Entrar →</div>
+      </a>
+      <a href="#" class="l-card">
+        <div class="l-card-top"><div class="l-card-glyph">[ SNAPMATIC ]</div><div class="l-card-title">Fotos</div><div class="l-card-desc">Contenido visual del grupo. Builds, eventos y momentos en asfalto.</div></div>
+        <div class="l-card-arrow">Ver →</div>
+      </a>
+      <a href="#" class="l-card">
+        <div class="l-card-top"><div class="l-card-glyph">[ SERVIDOR RP ]</div><div class="l-card-title">GTA V</div><div class="l-card-desc">Acceso al servidor de roleplay. Necesitas estar aprobado primero.</div></div>
+        <div class="l-card-arrow">Conectar →</div>
+      </a>
+      <a href="#" class="l-card">
+        <div class="l-card-top"><div class="l-card-glyph">[ YOUTUBE ]</div><div class="l-card-title">Grabaciones</div><div class="l-card-desc">Carreras grabadas, compilados y sesiones nocturnas documentadas.</div></div>
+        <div class="l-card-arrow">Suscribir →</div>
+      </a>
+      <a href="#" class="l-card">
+        <div class="l-card-top"><div class="l-card-glyph">[ REGLAMENTO ]</div><div class="l-card-title">Normas</div><div class="l-card-desc">Código interno. Lo que se espera, lo que se respeta y lo que no se tolera.</div></div>
+        <div class="l-card-arrow">Leer →</div>
+      </a>
+    </div>
+  </div>
+</section>
+<div class="h-rule"></div>
+
+<!-- JOIN -->
+<section id="join">
+  <div class="wrap sec">
+    <div class="join-wrap reveal">
+      <div class="join-left">
+        <div>
+          <div class="sec-label" style="margin-bottom:20px;">// 05 — Unirse</div>
+          <div class="big-quote">No estamos completos.<br>Siempre falta alguien con la mente <em>lo suficientemente enferma.</em></div>
+        </div>
+        <p>No buscamos fama. Buscamos respeto. Si venís desde abajo, si tenés algo que demostrar, si la calle ya te cobró caro y seguís acelerando — hay un lugar para vos.</p>
+      </div>
+      <div class="join-right">
+        <div class="sec-label">Primer paso</div>
+        <p>El ingreso al grupo empieza por el Discord. Ahí nos encontrás, nos presentás y vemos si encajás.</p>
+        <a href="https://discord.gg/9VTyfWuX" target="_blank" rel="noopener" class="btn-discord" style="margin-top:4px;">
+          <svg class="discord-icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          Ir al Discord
+        </a>
+        <p class="warn">// Enlace temporal</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">SICK<span>.</span>MINDED</div>
+  <p>Los Santos — Underground Racing Crew</p>
+  <p>No buscamos fama. Buscamos respeto.</p>
+</footer>
+
+<script>
+  // Nav
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+  // Reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Mobile menu
+  function toggleMenu() {
+    document.getElementById('mobileOverlay').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+    document.body.style.overflow = document.getElementById('mobileOverlay').classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMenu() {
+    document.getElementById('mobileOverlay').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+</body>
+</html>
