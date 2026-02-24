@@ -98,6 +98,17 @@
         radial-gradient(ellipse 100% 60% at 50% 110%, rgba(139,26,18,0.18) 0%, transparent 65%),
         linear-gradient(180deg, #020202 0%, #050202 60%, #080303 100%);
     }
+
+    .bg-gif {
+      position: absolute; inset: 0;
+      z-index: 0;
+      background-image: url('imgs/tu-fondo.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.25;   /* controla cuánto se ve debajo del gradiente oscuro */
+}
+
     .scanlines {
       position: absolute; inset: 0;
       background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px);
@@ -477,6 +488,7 @@
 <!-- HERO -->
 <section id="hero">
   <div class="hero-bg"></div>
+  <div class="bg-gif"></div>
   <div class="scanlines"></div>
   <div class="vignette"></div>
   <div class="road"></div>
